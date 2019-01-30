@@ -1,0 +1,381 @@
+@import '../common/css/variables.styl';
+@import '../common/css/reset.styl';
+
+.cruise-header {
+    grid-area: header;
+    // background: $color-white;
+    background: white;
+    box-shadow: 0px 0px 10px 0 #888888;
+    z-index: 10;
+
+    .logo {
+        width: 80px;
+        height: 100%;
+        margin: 0 auto;
+        display: block;
+        cursor: pointer;
+    }
+}
+
+.cruise-content {
+    grid-area: content;
+    background: white;
+    display: grid;
+    grid-template-areas: 'leftside' 'right-side';
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 1fr;
+    min-width: $responsive-desktop-hd;
+    margin: 0 auto;
+}
+
+.cruise-left {
+    grid-area: leftside;
+    background: $color-mazarine;
+
+    .nav {
+        font-size: 14px;
+        font-family: Arial, Helvetica, Arial, sans-serif;
+        padding-top: 20px;
+
+        li {
+            light-height: 14px;
+            padding: 15px;
+            cursor: pointer;
+
+            &:hover {
+                background: $color-mazarine-dark;
+                transition: all 0.5s;
+            }
+
+            &.active {
+                background: $color-mazarine-dark;
+
+                i, span.title {
+                    color: $color-blue;
+                }
+            }
+        }
+
+        i, span.title {
+            color: white;
+        }
+
+        span.title {
+            margin: 0 0 0 15px;
+        }
+    }
+}
+
+.cruise-right {
+    grid-area: right-side;
+}
+
+.cruise-footer {
+    grid-area: footer;
+}
+
+.cruise {
+    background: $color-grey;
+    display: grid;
+    grid-template-areas: 'header header' 'content content';
+    grid-template-columns: 100%;
+    grid-template-rows: 60px 1fr;
+    min-height: 100vh;
+    width: 100%;
+
+    .cruise-agent {
+        background: $color-grey;
+
+        .agent-list {
+            margin: 20px;
+
+            >li {
+                background: white;
+                margin: 10px 0;
+
+                .agent-list-item {
+                    height: 100px;
+
+                    img {
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        height: 80px;
+                        float: left;
+                    }
+
+                    .detail {
+                        margin-left: 100px;
+                        // background: red;
+                        height: 100%;
+                        padding: 10px;
+                        box-sizing: border-box;
+
+                        .detail-header {
+                            height: 40px;
+
+                            table {
+                                margin-top: 5px;
+                                width: 100%;
+
+                                td {
+                                    max-width: 150px;
+                                    min-width: 100px;
+                                }
+
+                                .agent-status {
+                                    display: initial;
+                                    padding: 0 5px;
+                                    color: white;
+                                    background: $color-green;
+                                }
+                            }
+
+                            i {
+                                color: $color-mazarine-dark;
+                                vertical-align: baseline;
+                                font-size: 16px;
+                                line-height: 20px;
+                                margin-right: 5px;
+                            }
+
+                            .detail-title {
+                                vertical-align: baseline;
+                                color: $color-blue;
+                            }
+                        }
+
+                        .detail-bottom {
+                            margin-top: 10px;
+
+                            button {
+                                padding: 0;
+                                background: $color-blue;
+                                color: white;
+                                height: 20px;
+                                light-height: 22px;
+                                border: none;
+                                vertical-align: middle;
+                            }
+
+                            i {
+                                vertical-align: middle;
+
+                                &.icon-deny {
+                                    margin-right: 5px;
+                                }
+                            }
+
+                            .deny-button {
+                                float: right;
+                                width: 60px;
+                            }
+
+                            .add-button {
+                                width: 20px;
+
+                                i {
+                                    font-size: 16px;
+                                    font-weight: 100;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .agent-info {
+            display: grid;
+            grid-template-areas: 'info-building info-idle info-detail';
+            grid-template-columns: 1fr 1fr 1fr;
+            margin: 10px;
+
+            >li {
+                box-sizing: border-box;
+                height: 100px;
+                background: white;
+                margin: 10px;
+
+                &.info-building {
+                    grid-area: info-building;
+                    background: $color-orange;
+                }
+
+                &.info-idle {
+                    grid-area: info-idle;
+                    background: $color-green;
+                }
+
+                &.info-detail {
+                    grid-area: info-detail;
+                }
+
+                &.panel {
+                    color: white;
+                    padding: 10px;
+
+                    .name {
+                        font-size: 20px;
+                    }
+
+                    .count {
+                        margin: 0 10px;
+                        font-size: 44px;
+                        text-align: right;
+                    }
+                }
+            }
+
+            .info-detail {
+                table {
+                    width: 100%;
+                    height: 100%;
+
+                    td {
+                        max-width: 0;
+                        text-align: center;
+                        align-items: center;
+
+                        .name {
+                            height: 20px;
+                        }
+
+                        .count {
+                            line-height: 50px;
+                            height: 50px;
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .agent-tab {
+            margin: 0 20px;
+            display: grid;
+            grid-template-areas: 'tab-filter tab-search tab-th';
+            grid-template-columns: 1fr 1fr 1fr;
+
+            >li {
+                box-sizing: border-box;
+                height: 50px;
+                background: white;
+            }
+
+            .tab-search {
+                display: table;
+
+                .input-group {
+                    padding-left: 10px;
+                    display: table-cell;
+                    vertical-align: middle;
+                    position: relative;
+
+                    i {
+                        position: absolute;
+                        font-size: 18px;
+                        left: 20px;
+                        top: 16px;
+                        color: $color-grey-dark;
+                    }
+
+                    input {
+                        height: 30px;
+                        width: 180px;
+                        text-indent: 34px;
+                        border: none;
+                        background: $color-grey;
+                    }
+                }
+            }
+
+            .tab-th {
+                line-height: 56px;
+                vertical-align: middle;
+                text-align: right;
+
+                i {
+                    margin: 0 5px;
+                    cursor: pointer;
+
+                    &.active {
+                        color: $color-blue;
+                    }
+                }
+            }
+
+            .tab-filter {
+                grid-area: tab-filter;
+
+                table {
+                    width: 100%;
+                    height: 100%;
+                    border-collapse: collapse;
+
+                    td {
+                        height: 100%;
+                        text-align: center;
+                        max-width: 0px;
+                        position: relative;
+                        cursor: pointer;
+
+                        &::after {
+                            position: absolute;
+                            content: '';
+                            display: block;
+                            right: 0;
+                            top: 0;
+                            height: 100%;
+                            width: 1px;
+                            background: $color-grey;
+                        }
+
+                        &:hover {
+                            background: $color-blue;
+                            color: white !important;
+                            transition: all 0.5s;
+                        }
+
+                        &.active {
+                            color: $color-blue;
+
+                            &::before {
+                                position: absolute;
+                                content: '';
+                                display: block;
+                                left: 0;
+                                bottom: 0;
+                                width: 100%;
+                                height: 3px;
+                                background: $color-blue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .tab-search {
+                grid-area: tab-search;
+            }
+
+            .tab-th {
+                grid-area: tab-th;
+            }
+        }
+    }
+}
+
+// @media screen and (max-width: $responsive-desktop) {
+// .cruise-content {
+// min-width: $responsive-tablet;
+// grid-template-areas: 'leftside' 'right-side';
+// }
+// }
+@media screen and (max-width: $responsive-tablet) {
+    .cruise-content {
+        min-width: $responsive-tablet;
+        grid-template-areas: 'right-side';
+        grid-template-columns: 0 1fr;
+        grid-template-rows: 1fr;
+    }
+}

@@ -1,0 +1,15 @@
+ul.agent-tab
+    li.tab-filter
+        table
+            tr
+                td.active {{ tab.all }}
+                td {{ tab.physical }}
+                td {{ tab.virtual }}
+    li.tab-search
+        .input-group
+            label(for="search-input")
+                i.icon-search
+            input(id="search-input")
+    li.tab-th
+        i.icon-th-card
+        i.icon-th-list.active

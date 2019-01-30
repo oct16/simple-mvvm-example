@@ -1,0 +1,19 @@
+ul.agent-info
+    li.info-building.panel
+        .name  {{ panel.building.name }}
+        .count  {{ panel.building.count }}
+    li.info-idle.panel
+        .name {{ panel.Idle.name }}
+        .count {{ panel.Idle.count }}
+    li.info-detail
+        table
+            tr
+                td
+                    .name {{ panel.detail.all.name }}
+                    .count {{ panel.detail.all.count }}
+                td
+                    .name {{ panel.detail.physical.name }}
+                    .count {{ panel.detail.physical.count }}
+                td
+                    .name {{ panel.detail.virtual.name }}
+                    .count {{ panel.detail.virtual.count }}
