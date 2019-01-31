@@ -6,6 +6,8 @@ require('./css/main.styl');
 require('./lib/dialog/dialog.styl');
 require('../assets/fonticons/fonts.css');
 
+const dialog = (window as any).dialog =  new Dialog();
+
 new VM({
     el: document.querySelector('#app'),
     data: mockData,
@@ -16,12 +18,9 @@ new VM({
     },
     methods: {
         addTag: (e: MouseEvent, agentItem: any) => {
-            agentItem.title = 123;
-            const { clientX, clientY } = e;
-            new Dialog({
-                clientX,
-                clientY
-            });
+            // agentItem.title = 123;
+            const { layerX, layerY } = e;
+            dialog.createDialog({ layerX, layerY });
         },
         deny: (agentItem: any) => {}
     }

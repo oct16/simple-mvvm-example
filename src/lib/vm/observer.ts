@@ -25,7 +25,7 @@ export class Observer {
                 }
                 return val
             },
-            set: (newVal) => {
+            set: (newVal: any) => {
                 if (val !== newVal) {
                     val = newVal
                     this.dep.notify()

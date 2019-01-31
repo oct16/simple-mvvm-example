@@ -1,10 +1,7 @@
 ul.agent-tab
     li.tab-filter
-        table
-            tr
-                td.active {{ tab.all }}
-                td {{ tab.physical }}
-                td {{ tab.virtual }}
+       ul
+            li(*for="tab of tabs") {{ tab.name }}
     li.tab-search
         .input-group
             label(for="search-input")

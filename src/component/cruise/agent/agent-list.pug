@@ -9,7 +9,8 @@ ul.agent-list
                             i.icon-desktop
                             span.detail-title {{ item.title }}
                         td
-                            .agent-status {{ item.status }}
+                            .agent-status.status-building(*if="item.status === 'building'") {{ item.status }}
+                            .agent-status(*if="item.status === 'idle'") {{ item.status }}
                         td
                             i.icon-info {{ item.ip }}
                         td
@@ -17,8 +18,14 @@ ul.agent-list
                 .detail-bottom
                     button.add-button(click="addTag(item)")
                         i.icon-plus
+                        
+                    ul.tags
+                        li(*for="tag of item.tags")
+                            i.icon-trash
+                            span {{ tag }}
+                    
                     button.deny-button(click="deny(item)")
                         i.icon-deny
                         span Deny
-                    
+
 
