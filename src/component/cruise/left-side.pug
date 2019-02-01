@@ -1,0 +1,12 @@
+aside.cruise-left
+    ul.nav
+        li(*for="navItem of navList")
+            .nav-item-container([active]="navItem.active")
+                i([class]="navItem.icon")
+                span.title {{ navItem.name }}
+
+    div.history
+        .title History
+        ul
+            li(*for="history of histories") {{ history }}
+            

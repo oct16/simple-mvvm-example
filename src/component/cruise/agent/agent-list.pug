@@ -1,28 +1,28 @@
 ul.agent-list
-    li(*for="item of testList")
-        .agent-list-item
-            img([src]="item.icon")
+    li(*for="item of agentList")
+        .agent-list-item([building]="item.status === 'building'")
+            .logo
+                img([src]="item.icon")
             .detail
-                .detail-header
-                    table
-                        td
-                            i.icon-desktop
-                            span.detail-title {{ item.title }}
-                        td
-                            .agent-status.status-building(*if="item.status === 'building'") {{ item.status }}
-                            .agent-status(*if="item.status === 'idle'") {{ item.status }}
-                        td
-                            i.icon-info {{ item.ip }}
-                        td
-                            i.icon-folder {{ item.folderName }}
+                ul.detail-header
+                    li
+                        i.icon-desktop
+                        span.detail-title {{ item.title }}
+                    li
+                        .agent-status.status-building(*if="item.status === 'building'") {{ item.status }}
+                        .agent-status(*if="item.status === 'idle'") {{ item.status }}
+                    li
+                        i.icon-info {{ item.ip }}
+                    li
+                        i.icon-folder {{ item.folderName }}
                 .detail-bottom
                     button.add-button(click="addTag(item)")
                         i.icon-plus
                         
                     ul.tags
                         li(*for="tag of item.tags")
-                            i.icon-trash
                             span {{ tag }}
+                            i.icon-trash
                     
                     button.deny-button(click="deny(item)")
                         i.icon-deny

@@ -1,11 +1,12 @@
 export const mockData = {
-    test: 'assets/logo/logo.svg',
+    copyright: '@Copyright 2017 ThoughtWorks',
+    logo: 'assets/logo/logo.svg',
     panel: {
         building: {
             name: 'Building',
             count: '3'
         },
-        Idle: {
+        idle: {
             name: 'Idle',
             count: '5'
         },
@@ -30,19 +31,14 @@ export const mockData = {
             active: true
         },
         {
-            name: 'Physical',
-            active: true
+            name: 'Virtual',
+            active: false
         },
         {
-            name: 'Virtual',
-            active: true
+            name: 'Physical',
+            active: false
         }
     ],
-    list: {
-        agent1: {
-            icon: 'assets/os_icons/windows.png'
-        }
-    },
     navList: [
         {
             name: 'DASHBOARD',
@@ -65,8 +61,24 @@ export const mockData = {
             icon: 'icon-life-bouy'
         }
     ],
-
-    testList: [
+    histories: [
+        'bjstdmnggbr03/Acceptance_test',
+        'bjstdmnggbr04/Acceptance_test',
+        'bjstdmnggbr05/Acceptance_test',
+        'bjstdmnggbr06/Acceptance_test',
+        'bjstdmnggbr07/Acceptance_test',
+        'bjstdmnggbr08/Acceptance_test',
+        'bjstdmnggbr09/Acceptance_test',
+        'bjstdmnggbr10/Acceptance_test',
+        'bjstdmnggbr11/Acceptance_test',
+        'bjstdmnggbr12/Acceptance_test',
+        'bjstdmnggbr13/Acceptance_test',
+        'bjstdmnggbr14/Acceptance_test',
+        'bjstdmnggbr15/Acceptance_test',
+        'bjstdmnggbr16/Acceptance_test',
+        'bjstdmnggbr17/Acceptance_test',
+    ],
+    agentList: [
         {
             icon: 'assets/os_icons/windows.png',
             title: 'bjstdmngbg01.thoughtworks.com',

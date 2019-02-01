@@ -3,7 +3,6 @@
 
 .cruise-header {
     grid-area: header;
-    // background: $color-white;
     background: white;
     box-shadow: 0px 0px 10px 0 #888888;
     z-index: 10;
@@ -22,7 +21,7 @@
     background: white;
     display: grid;
     grid-template-areas: 'leftside' 'right-side';
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 250px 1fr;
     grid-template-rows: 1fr;
     width: $responsive-desktop-hd;
     margin: 0 auto;
@@ -31,6 +30,33 @@
 .cruise-left {
     grid-area: leftside;
     background: $color-mazarine;
+    color: #ccc;
+    display: grid;
+
+    .history {
+        display: grid;
+        align-content: end;
+        font-size: 24px;
+        padding: 15px;
+        overflow: scroll;
+
+        .title {
+            padding: 10px 0;
+        }
+
+        li {
+            margin-left: 10px;
+            padding: 3px 8px;
+            list-style: disc;
+            color: #999;
+            font-size: 12px;
+            cursor: pointer;
+
+            &:hover {
+                color: #00b4cf;
+            }
+        }
+    }
 
     .nav {
         font-size: 14px;
@@ -74,22 +100,26 @@
 
 .cruise-footer {
     grid-area: footer;
+    background: white;
+    box-shadow: 10px 0px 0px 0 #888888;
+    z-index: 10;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
 }
 
 .cruise {
     background: $color-grey;
     display: grid;
-    grid-template-areas: 'header header' 'content content';
-    grid-template-columns: 100%;
+    grid-template-areas: 'header header' 'content content' 'footer footer';
+    grid-template-columns: 1fr;
     grid-template-rows: 60px 1fr;
-    min-height: 100vh;
-    width: 100%;
 
     .cruise-agent {
         background: $color-grey;
 
         .agent-list {
-            margin: 20px;
+            margin: 10px 20px;
 
             >li {
                 background: white;
@@ -97,42 +127,44 @@
 
                 .agent-list-item {
                     height: 100px;
+                    // grid-template-areas: 'left right';
+                    grid-template-columns: 100px auto;
+                    grid-template-rows: 1fr;
+                    display: grid;
 
                     img {
                         margin-top: 10px;
                         margin-left: 10px;
                         height: 80px;
-                        float: left;
+                    }
+
+                    .logo {
                     }
 
                     .detail {
-                        margin-left: 100px;
-                        // background: red;
                         height: 100%;
                         padding: 10px;
                         box-sizing: border-box;
 
                         .detail-header {
-                            height: 40px;
+                            margin-top: 10px;
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr 1fr;
 
-                            table {
-                                margin-top: 5px;
-                                width: 100%;
+                            li {
+                            }
 
-                                td {
-                                    max-width: 150px;
-                                    min-width: 100px;
-                                }
+                            .agent-status {
+                                display: inline-block;
+                                padding: 0 5px;
+                                line-height: 16px;
+                                margin-top: 4px;
+                                margin-left: 20px;
+                                color: white;
+                                background: $color-green;
 
-                                .agent-status {
-                                    display: initial;
-                                    padding: 0 5px;
-                                    color: white;
-                                    background: $color-green;
-
-                                    &.status-building {
-                                        background: $color-orange;
-                                    }
+                                &.status-building {
+                                    background: $color-orange;
                                 }
                             }
 
@@ -146,12 +178,13 @@
 
                             .detail-title {
                                 vertical-align: baseline;
+                                line-height: 16px;
                                 color: $color-blue;
                             }
                         }
 
                         .detail-bottom {
-                            margin-top: 10px;
+                            margin-top: 25px;
 
                             .tags {
                                 vertical-align: middle;
@@ -197,6 +230,7 @@
 
                             .add-button {
                                 width: 20px;
+                                cursor: pointer;
 
                                 i {
                                     font-size: 16px;
@@ -213,13 +247,14 @@
             display: grid;
             grid-template-areas: 'info-building info-idle info-detail';
             grid-template-columns: 1fr 1fr 1fr;
-            margin: 10px;
+            margin: 10px 10px 0 10px;
 
             >li {
                 box-sizing: border-box;
                 height: 100px;
                 background: white;
                 margin: 10px;
+                position: relative;
 
                 &.info-building {
                     grid-area: info-building;
@@ -247,6 +282,40 @@
                         margin: 0 10px;
                         font-size: 44px;
                         text-align: right;
+                    }
+                }
+
+                &.font-bg {
+                    font-family: 'cruise';
+
+                    &.cog {
+                        &:before {
+                            content: '\f013';
+                            color: rgba(255, 255, 255, 0.1);
+                            width: 100%;
+                            height: 100%;
+                            font-size: 7em;
+                            text-align: center;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            line-height: 100px;
+                        }
+                    }
+
+                    &.coffee {
+                        &:before {
+                            content: '\f0f4';
+                            color: rgba(255, 255, 255, 0.1);
+                            width: 100%;
+                            height: 100%;
+                            font-size: 7em;
+                            text-align: center;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            line-height: 100px;
+                        }
                     }
                 }
             }
@@ -288,15 +357,12 @@
             }
 
             .tab-search {
-                display: table;
-
                 .input-group {
-                    padding-left: 10px;
-                    display: table-cell;
+                    padding: 10px;
                     vertical-align: middle;
                     position: relative;
 
-                    i {
+                    label {
                         position: absolute;
                         font-size: 18px;
                         left: 20px;
@@ -363,7 +429,7 @@
                             transition: all 0.5s;
                         }
 
-                        &.active {
+                        &[active] {
                             color: $color-blue;
 
                             &::before {
@@ -393,19 +459,108 @@
 }
 
 @media screen and (max-width: $responsive-phone) {
-    .cruise-content {
-        max-width: $responsive-phone;
-        width: 100%;
-        grid-template-areas: 'leftside right-side';
-        grid-template-columns: 0 1fr;
-        grid-template-rows: 1fr;
+    .cruise {
+        .cruise-left {
+            display: none;
+        }
+
+        .cruise-content {
+            max-width: $responsive-phone;
+            width: 100%;
+            grid-template-areas: 'right-side';
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr;
+        }
+
+        .cruise-agent {
+            .agent-tab {
+                margin: 10px;
+                display: grid;
+                grid-template-areas: 'tab-filter' 'tab-search' 'tab-th';
+                grid-template-rows: 1fr 1fr 0;
+                grid-template-columns: 1fr;
+
+                .tab-search {
+                    .input-group {
+                        input {
+                            width: 100%;
+                        }
+                    }
+                }
+
+                .tab-th {
+                    display: none;
+                }
+            }
+
+            .agent-info {
+                margin: 0;
+                grid-template-areas: 'info-building info-idle' 'info-detail info-detail';
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+
+            .agent-list {
+                margin: 10px;
+
+                >li {
+                    .agent-list-item {
+                        height: auto;
+                        grid-template-columns: 1fr;
+                        grid-template-rows: 1fr;
+                        display: grid;
+                        position: relative;
+
+                        &:before {
+                            content: '';
+                            width: 4px;
+                            background: $color-green;
+                            height: 100%;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                        }
+
+                        &[building] {
+                            &:before {\
+                                background: $color-orange;
+                            }
+                        }
+
+                        .detail {
+                            .detail-header {
+                                margin-top: 0;
+                                grid-template-columns: 1fr;
+
+                                li:nth-child(2) {
+                                    display: none;
+                                }
+                            }
+
+                            .detail-bottom {
+                                margin-top: 0;
+                            }
+                        }
+
+                        .logo {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    .cruise .cruise-agent {
-        .agent-info {
-            grid-template-areas: 'info-building info-idle info-detail info-detail';
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;    
+    .dialog {
+        .dialog-content {
+            width: 95% !important;
+            box-sizing: border-box;
+            transform: translateX(20px);
+            height: auto !important;
+
+            .triangle {
+                transform: translateX(-12px);
+            }
         }
     }
 }

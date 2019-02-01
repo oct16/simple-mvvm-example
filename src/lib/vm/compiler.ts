@@ -23,12 +23,11 @@ export class Compiler {
     $methods: { [key: string]: (param: any, ...restOfName: any[]) => any };
     $el: HTMLElement;
     constructor(vm: vmConfig) {
+        this.$el = vm.el as HTMLElement;
         this.$vm = vm;
         this.$data = vm.data;
         this.$computed = vm.computed;
         this.$methods = vm.methods;
-        this.$el = vm.el as HTMLElement;
-
         this.compileEl(this.$el);
     }
 
@@ -48,31 +47,26 @@ export class Compiler {
 
     compileNode(frag: DocumentFragment | HTMLElement): void {
         const nodes = Array.prototype.slice.call(frag.childNodes);
-
         nodes.forEach((node: HTMLElement) => {
             if (isNodeElement(node)) {
                 const clickMethod = getClickMethod(node);
                 const attrNames = node.getAttributeNames();
 
                 if (attrNames.length) {
-                    const forDirective = attrNames.filter(name => {
-                        return FOR_DIRECTIVE_REG.test(name);
-                    });
+                    const forDirective = attrNames.filter(name => FOR_DIRECTIVE_REG().test(name));
                     if (forDirective.length) {
                         const direct = forDirective[0];
                         this.for__compiler(node, direct);
                         return;
                     }
 
-                    const ifDirective = attrNames.filter(name => {
-                        return IF_DIRECTIVE_REG.test(name);
-                    });
+                    const ifDirective = attrNames.filter(name => IF_DIRECTIVE_REG().test(name));
                     if (ifDirective.length) {
                         const direct = ifDirective[0];
                         this.if__compiler(node, direct);
                     }
 
-                    const bindAttrs = attrNames.filter(name => BIND_ATTR_REG.test(name));
+                    const bindAttrs = attrNames.filter(name => BIND_ATTR_REG().test(name));
                     if (bindAttrs.length) {
                         bindAttrs.forEach(attr => {
                             this.attr__compiler(node, attr);
@@ -118,16 +112,16 @@ export class Compiler {
                 listData.forEach((_, index) => {
                     const div = document.createElement('div');
                     div.innerHTML = reRenderHTML.trim();
-                    const childNode = div.lastElementChild;
+                    const childNode = div.lastChild as Element;
                     const childData = {} as any;
                     childData[listItemExp] = listData[index];
-                    nodeParent.append(childNode as ChildNode);
                     new VM({
-                        el: childNode,
+                        el: childNode.parentNode,
                         data: childData,
                         computed: this.$computed,
                         methods: this.$methods
                     } as vmConfig);
+                    nodeParent.append(childNode as ChildNode);
                 });
             }
         }
@@ -138,9 +132,24 @@ export class Compiler {
         const length = attr.length;
         const pureAttr = attr.substring(1, length - 1);
         if (exp) {
-            const val = this.getVal(exp);
-            if (val) {
-                node.setAttribute(pureAttr, val);
+            //  TODO reduplicative, extract to utils
+            if (isExpression(exp)) {
+                const regExpMatchArray = resolveExpression(exp);
+                if (regExpMatchArray) {
+                    const [left, operate, right] = regExpMatchArray.slice(1);
+                    const leftVal = isExpressionWithPrimitiveType(left) ? left.replace(/[\'\"]+/g, '') : this.getVal(left);
+                    const rightVal = isExpressionWithPrimitiveType(right) ? right.replace(/[\'\"]+/g, '') : this.getVal(right);
+
+                    let equal = eval([`'${leftVal}'`, operate, `'${rightVal}'`].join(' '));
+                    if (equal) {
+                        node.setAttribute(pureAttr, 'true');
+                    }
+                }
+            } else {
+                const val = this.getVal(exp);
+                if (val) {
+                    node.setAttribute(pureAttr, val);
+                }
             }
             node.removeAttribute(attr);
             new Watcher(this.$vm, exp, val => {
@@ -150,8 +159,8 @@ export class Compiler {
     }
 
     innerText__compiler(node: Node, exp: string): void {
-        const val = this.getVal(exp);  
-        node.textContent = node.textContent ? node.textContent.replace(MUSTACHE_TAG_REG, val) : '';
+        const val = this.getVal(exp);
+        node.textContent = node.textContent ? node.textContent.replace(MUSTACHE_TAG_REG(), val) : '';
         new Watcher(this.$vm, exp, val => {
             node.textContent = val;
         });
@@ -160,6 +169,7 @@ export class Compiler {
     if__compiler(node: HTMLElement, direct: string): void {
         const exp = node.getAttribute(direct);
         if (exp) {
+            //  TODO reduplicative, extract to utils
             if (isExpression(exp)) {
                 const regExpMatchArray = resolveExpression(exp);
                 if (regExpMatchArray) {

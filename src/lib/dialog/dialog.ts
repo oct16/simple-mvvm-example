@@ -3,25 +3,33 @@ interface Position {
     layerY: number;
 }
 
+export interface DialogContent {
+    title: string;
+    confirm: string;
+    cancel: string;
+}
+
 export class Dialog {
-    private static gapX = -32;
-    private static gapY = 40;
+    static gapX = -32;
+    static gapY = 40;
     position: Position;
+    content: DialogContent;
     constructor() {}
 
-    createDialog(position: Position): void {
+    createDialog(position: Position, content: DialogContent): void {
         if (this.isCreated()) {
-            return;
+            this.removeDialog();
         }
 
-        this.initData(position);
+        this.initData(position, content);
         const node = this.createDom();
         this.bindDom(node);
         this.renderDom(node);
     }
 
-    initData(position: Position): void {
+    initData(position: Position, content: DialogContent): void {
         this.position = position;
+        this.content = content;
     }
 
     createDom(): HTMLElement {
@@ -65,19 +73,26 @@ export class Dialog {
     createLayer(): string {
         const position = this.position;
         return `
-            <div style="top: ${position.layerY + Dialog.gapY}px; left: ${position.layerX + Dialog.gapX}px" class="dialog-content">
+            <div style="
+                top: ${position.layerY + Dialog.gapY}px;
+                left: ${position.layerX + Dialog.gapX}px;
+                " class="dialog-content">
                 <div class="triangle"></div>
                 <div class="triangle inner"></div>
                 <div class="dialog-close">
                     <i class="icon-close"></i>
                 </div>
                 <div class="dialog-title">
-                    Separate multiple name with commas
+                    ${this.content.title}
                 </div>
                 <input class="dialog-input">
                 <div class="dialog-action">
-                    <button class="dialog-confirm">Add Resources</button>
-                    <button class="dialog-cancel">Cancel</button>
+                    <button class="dialog-confirm">
+                        ${this.content.confirm}
+                    </button>
+                    <button class="dialog-cancel">
+                        ${this.content.cancel}
+                    </button>
                 </div>
             </div>`;
     }

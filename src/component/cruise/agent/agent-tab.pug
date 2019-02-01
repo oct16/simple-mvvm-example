@@ -1,7 +1,8 @@
 ul.agent-tab
     li.tab-filter
        ul
-            li(*for="tab of tabs") {{ tab.name }}
+            li(*for="tab of tabs", [active]="tab.active")
+                span {{ tab.name }}
     li.tab-search
         .input-group
             label(for="search-input")
