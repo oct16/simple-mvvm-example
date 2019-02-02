@@ -22,13 +22,15 @@
 
 ### 使用方法
 
-`
+```
 cd to project
 
 npm i 
 
 npm run start
+Project is running at http://localhost:8081/
+
 npm run build
 npm run test
 npm run analyze
-`
+```

@@ -2,15 +2,15 @@ import { Dep } from './dep'
 import { isObject } from './utils'
 
 export class Observer {
-    dep: Dep;
-    constructor (data: any) {
+    dep: Dep
+    constructor(data: any) {
         this.dep = new Dep()
         Object.keys(data).forEach(key => {
             this.defineReactive(data, key)
         })
     }
 
-    defineReactive (data: any, key: string): void {
+    defineReactive(data: any, key: string): void {
         let val = data[key]
         if (isObject(val)) {
             new Observer(val)
@@ -35,6 +35,5 @@ export class Observer {
                 }
             }
         })
-
     }
 }

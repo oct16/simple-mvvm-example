@@ -10,7 +10,7 @@ ul.agent-list
                         span.detail-title {{ item.title }}
                     li
                         .agent-status.status-building(*if="item.status === 'building'") {{ item.status }}
-                        .agent-status(*if="item.status === 'idle'") {{ item.status }}
+                        .agent-status(*else) {{ item.status }}
                     li
                         i.icon-info {{ item.ip }}
                     li

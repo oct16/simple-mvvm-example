@@ -76,7 +76,7 @@ export const mockData = {
         'bjstdmnggbr14/Acceptance_test',
         'bjstdmnggbr15/Acceptance_test',
         'bjstdmnggbr16/Acceptance_test',
-        'bjstdmnggbr17/Acceptance_test',
+        'bjstdmnggbr17/Acceptance_test'
     ],
     agentList: [
         {
@@ -128,4 +128,4 @@ export const mockData = {
             tags: ['windows', 'ubuntu']
         }
     ]
-};
+}

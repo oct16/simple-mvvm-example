@@ -1,25 +1,25 @@
-let uid = 0;
+let uid = 0
 export class Dep {
-    target: any;
-    subQueue: any[];
-    id: number;
+    public target: any
+    public subQueue: any[]
+    public id: number
     constructor() {
-        this.subQueue = [];
-        this.id = uid++;
+        this.subQueue = []
+        this.id = uid++
     }
 
-    addSub(sub: any): void {
-        this.subQueue.push(sub);
+    public addSub(sub: any): void {
+        this.subQueue.push(sub)
     }
 
-    notify(): void {
-        this.subQueue.forEach(sub => sub.update());
+    public notify(): void {
+        this.subQueue.forEach(sub => sub.update())
     }
 
-    removeSub(sub: any[]): void {
-        const index = this.subQueue.indexOf(sub);
-        this.subQueue.splice(index, 1);
+    public removeSub(sub: any[]): void {
+        const index = this.subQueue.indexOf(sub)
+        this.subQueue.splice(index, 1)
     }
 }
 
-(Dep as any).target = null;
+;(Dep as any).target = null
