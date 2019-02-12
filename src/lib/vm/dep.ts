@@ -1,25 +1,27 @@
+import { Watcher } from './watcher'
+
 let uid = 0
 export class Dep {
-    public target: any
-    public subQueue: any[]
+    public static target: any
+    public static templateId: number | null
+    public subQueue: Watcher[]
     public id: number
     constructor() {
         this.subQueue = []
-        this.id = uid++
+        this.id = ++uid
     }
 
-    public addSub(sub: any): void {
+    public addSub(sub: Watcher): void {
         this.subQueue.push(sub)
     }
 
     public notify(): void {
+        console.log(this.subQueue)
         this.subQueue.forEach(sub => sub.update())
     }
 
-    public removeSub(sub: any[]): void {
+    public removeSub(sub: Watcher): void {
         const index = this.subQueue.indexOf(sub)
         this.subQueue.splice(index, 1)
     }
 }
-
-;(Dep as any).target = null

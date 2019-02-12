@@ -85,7 +85,8 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.125',
             status: 'idle',
-            tags: ['windows', 'ubuntu']
+            tags: ['windows', 'ubuntu'],
+            test: 1
         },
         {
             icon: 'assets/os_icons/windows.png',
@@ -93,7 +94,8 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.182',
             status: 'building',
-            tags: ['windows', 'ubuntu']
+            tags: ['windows', 'ubuntu'],
+            test: 2
         },
         {
             icon: 'assets/os_icons/ubuntu.png',

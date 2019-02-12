@@ -1,22 +1,35 @@
 import { Dep } from './dep'
-import { vmConfig } from './model'
+import { VmConfig, WatcherOption } from './model'
+import { getFirstExp, isExpression } from './utils'
 // Watcher is actually a subscriber
 export class Watcher {
-    $vm: vmConfig
+    $vm: VmConfig
     $exp: string
+    $templateId: number | null;
     $cb: (opt: any) => any
     value: any
-    constructor(vm: vmConfig, exp: string, cb: (opt: any) => any) {
-        this.$vm = vm
-        this.$exp = exp
+    constructor(option: WatcherOption, cb: (opt: any) => any) {
+        this.$vm = option.vm
+        this.$exp = this.getExp(option.exp)
         this.$cb = cb
+        this.$templateId = option.templateId || null
+        Dep.target = this
+        Dep.templateId = option.templateId || null
+        this.value = this.getVal(this.$exp)
 
-        ;(Dep as any).target = this // get target for add dep
-        this.value = this.getVal(exp)
-        ;(Dep as any).target = null
+        Dep.templateId = null
+        Dep.target = null
+        return this
     }
 
-    getVal(exp: string): any {
+    private getExp(exp: string): any {
+        if (isExpression(exp)) {
+            return getFirstExp(exp)
+        }
+        return exp
+    }
+
+    private getVal(exp: string): any {
         const data = this.$vm.data
         const keys = exp.split('.')
         let val = data
@@ -24,11 +37,11 @@ export class Watcher {
         return val
     }
 
-    // notify the latest result
-    update(): void {
+    public update(): void {
         const newVal = this.getVal(this.$exp)
         if (newVal !== this.value) {
-            ;(this.$cb as any).call(this.$vm, newVal, this.value)
+            console.log(newVal)
+            this.$cb(newVal)
         }
     }
 }

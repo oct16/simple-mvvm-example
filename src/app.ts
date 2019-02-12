@@ -24,6 +24,14 @@ new VM({
                     cancel: 'Cancel'
                 }
             )
+        },
+        deny: (e: MouseEvent, agentItem: any) => {
+            if (Math.random() > 0.5) {
+                agentItem.status = 'building'
+            } else {
+                agentItem.status = (Math.random() * 10000).toFixed(2)
+            }
+            // agentItem.status = (Math.random() * 10000).toFixed(2)
         }
     }
 })

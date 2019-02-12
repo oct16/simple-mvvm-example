@@ -1,8 +1,9 @@
 import { Dep } from './dep'
 import { isObject } from './utils'
+import { Watcher } from './watcher'
 
 export class Observer {
-    dep: Dep
+    public dep: Dep
     constructor(data: any) {
         this.dep = new Dep()
         Object.keys(data).forEach(key => {
@@ -10,7 +11,7 @@ export class Observer {
         })
     }
 
-    defineReactive(data: any, key: string): void {
+    private defineReactive(data: any, key: string): void {
         let val = data[key]
         if (isObject(val)) {
             new Observer(val)
@@ -19,9 +20,16 @@ export class Observer {
             enumerable: true,
             configurable: true,
             get: () => {
-                // if from new watcher getter (exclude from text compile)
-                if ((Dep as any).target) {
-                    this.dep.addSub((Dep as any).target)
+                if (Dep.target) {
+                    if (Dep.templateId) {
+                        const templateWatchers = this.dep.subQueue.filter((sub: Watcher) => sub.$templateId)
+                        if (templateWatchers.length) {
+                            templateWatchers.forEach(watcher => {
+                                this.dep.removeSub(watcher)
+                            })
+                        }
+                    }
+                    this.dep.addSub(Dep.target)
                 }
                 return val
             },

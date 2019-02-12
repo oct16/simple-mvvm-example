@@ -1,4 +1,4 @@
-import { vmConfig } from './model'
+import { VmConfig, compileNodeOption } from './model'
 import {
     BIND_ATTR_REG,
     calculateExpression,
@@ -18,13 +18,16 @@ import {
 } from './utils'
 import { VM } from './vm'
 import { Watcher } from './watcher'
+import { TemplateStore } from './store'
+
 export class Compiler {
-    $vm: vmConfig
-    $data: any
-    $computed: any
-    $methods: { [key: string]: (param: any, ...restOfName: any[]) => any }
-    $el: HTMLElement
-    constructor(vm: vmConfig) {
+    private $vm: VmConfig
+    private $data: any
+    private $computed: any
+    private $methods: { [key: string]: (param: any, ...restOfName: any[]) => any }
+    private $el: HTMLElement
+    private $templateStore = new TemplateStore()
+    constructor(vm: VmConfig) {
         this.$el = vm.el as HTMLElement
         this.$vm = vm
         this.$data = vm.data
@@ -33,13 +36,13 @@ export class Compiler {
         this.compileEl(this.$el)
     }
 
-    compileEl(el: HTMLElement): void {
+    private compileEl(el: HTMLElement): void {
         const frag = this.node2frag(el)
-        this.compileNode(frag)
+        this.compileNodes(frag)
         el.appendChild(frag)
     }
 
-    node2frag(el: HTMLElement): DocumentFragment {
+    private node2frag(el: HTMLElement): DocumentFragment {
         const frag = document.createDocumentFragment()
         while (el.lastChild) {
             frag.appendChild(el.lastChild)
@@ -47,51 +50,75 @@ export class Compiler {
         return frag
     }
 
-    compileNode(frag: DocumentFragment | HTMLElement): void {
+    private compileNodes(frag: DocumentFragment | HTMLElement): void {
         const nodes = Array.prototype.slice.call(frag.childNodes)
         nodes.forEach((node: HTMLElement) => {
-            if (isNodeElement(node)) {
-                const clickMethod = getClickMethod(node)
-                const attrNames = node.getAttributeNames()
-
-                if (attrNames.length) {
-                    const forDirective = attrNames.filter(name => FOR_DIRECTIVE_REG().test(name))
-                    if (forDirective.length) {
-                        const direct = forDirective[0]
-                        this.for__compiler(node, direct)
-                        return
-                    }
-
-                    const ifDirective = attrNames.filter(name => IF_DIRECTIVE_REG().test(name))
-                    if (ifDirective.length) {
-                        const direct = ifDirective[0]
-                        this.if__compiler(node, direct)
-                    }
-
-                    const bindAttrs = attrNames.filter(name => BIND_ATTR_REG().test(name))
-                    if (bindAttrs.length) {
-                        bindAttrs.forEach(attr => {
-                            this.attr__compiler(node, attr)
-                        })
-                    }
-                }
-                if (clickMethod) {
-                    const { methods } = this.$vm
-                    const method = clickMethod.split('(')[0]
-                    const bindData = Object.keys(this.$vm.data).map(key => this.$vm.data[key])
-                    node.addEventListener(CLICK_TAG, (event: MouseEvent) => methods[method].apply(this.$vm, [event, ...(bindData as any)]))
-                }
-
-                if (node.childNodes.length) {
-                    this.compileNode(node)
-                }
-            } else if (isNodeText(node) && isMustacheTagText(node.textContent as string)) {
-                this.innerText__compiler(node, RegExp.$1)
-            }
+            this.compileNode(node)
         })
     }
 
-    getVal(exp: string): any {
+    private compileNode(node: HTMLElement, templateId?: number): void {
+        if (templateId) {
+            const ifHTML = this.$templateStore.getIfHTML(templateId)
+            const elseHTML = this.$templateStore.getElseHTML(templateId)
+
+            if (ifHTML) {
+                const div = document.createElement('div')
+                div.innerHTML = ifHTML
+                const parentNode = node.parentElement
+                if (parentNode) {
+                    if (elseHTML) {
+                        const div = document.createElement('div')
+                        div.innerHTML = elseHTML
+                        parentNode.replaceChild(div.lastChild as HTMLElement, node.nextElementSibling as HTMLElement)
+                    }
+                    parentNode.replaceChild(div.lastChild as HTMLElement, node)
+                    this.compileNode(parentNode)
+                }
+            }
+        }
+
+        if (isNodeElement(node)) {
+            const clickMethod = getClickMethod(node)
+            const attrNames = node.getAttributeNames()
+
+            if (attrNames.length) {
+                const forDirective = attrNames.filter(name => FOR_DIRECTIVE_REG().test(name))
+                if (forDirective.length) {
+                    const direct = forDirective[0]
+                    this.for__compiler(node, direct)
+                    return
+                }
+
+                const ifDirective = attrNames.filter(name => IF_DIRECTIVE_REG().test(name))
+                if (ifDirective.length) {
+                    const direct = ifDirective[0]
+                    this.if__compiler(node, direct, templateId)
+                }
+
+                const bindAttrs = attrNames.filter(name => BIND_ATTR_REG().test(name))
+                if (bindAttrs.length) {
+                    bindAttrs.forEach(attr => {
+                        this.attr__compiler(node, attr)
+                    })
+                }
+            }
+            if (clickMethod) {
+                const { methods } = this.$vm
+                const method = clickMethod.split('(')[0]
+                const bindData = Object.keys(this.$vm.data).map(key => this.$vm.data[key])
+                node.addEventListener(CLICK_TAG, (e: MouseEvent) => methods[method].apply(this.$vm, [e, ...(bindData as any)]))
+            }
+
+            if (node.childNodes.length) {
+                this.compileNodes(node)
+            }
+        } else if (isNodeText(node) && isMustacheTagText(node.textContent as string)) {
+            this.innerText__compiler(node, RegExp.$1)
+        }
+    }
+
+    private getVal(exp: string): any {
         let val = this.$data
         const keys = exp.split('.')
         keys.forEach(key => {
@@ -100,7 +127,7 @@ export class Compiler {
         return val
     }
 
-    for__compiler(node: HTMLElement, direct: string): void {
+    private for__compiler(node: HTMLElement, direct: string): void {
         const exp = node.getAttribute(direct)
         if (exp) {
             const [itemExp, arrayExp] = exp.split('of').map(item => item.trim())
@@ -121,14 +148,14 @@ export class Compiler {
                         data: childData,
                         el: childNode.parentNode,
                         methods: this.$methods
-                    } as vmConfig)
+                    } as VmConfig)
                     nodeParent.append(childNode as ChildNode)
                 })
             }
         }
     }
 
-    attr__compiler(node: HTMLElement, attr: string): void {
+    private attr__compiler(node: HTMLElement, attr: string): void {
         const exp = node.getAttribute(attr)
         const length = attr.length
         const pureAttr = attr.substring(1, length - 1)
@@ -144,47 +171,84 @@ export class Compiler {
                     node.setAttribute(pureAttr, val)
                 }
             }
+            new Watcher(
+                {
+                    vm: this.$vm,
+                    exp
+                },
+                val => {
+                    node.setAttribute(pureAttr, val)
+                }
+            )
             node.removeAttribute(attr)
-            new Watcher(this.$vm, exp, val => {
-                node.setAttribute(pureAttr, val)
-            })
         }
     }
 
-    innerText__compiler(node: Node, exp: string): void {
+    private innerText__compiler(node: Node, exp: string): void {
         const val = this.getVal(exp)
         node.textContent = node.textContent ? node.textContent.replace(MUSTACHE_TAG_REG(), val) : ''
-        new Watcher(this.$vm, exp, content => {
-            node.textContent = content
-        })
+        new Watcher(
+            {
+                vm: this.$vm,
+                exp
+            },
+            val => {
+                node.textContent = val
+            }
+        )
     }
 
-    if__compiler(node: HTMLElement, direct: string): void {
-        const exp = node.getAttribute(direct)
-        if (exp) {
-            if (isExpression(exp)) {
-                const equal = calculateExpression(exp, this.getVal.bind(this))
-                if (!equal) {
-                    node.style.display = 'none'
-                }
-                const nextNode = node.nextElementSibling
-                if (nextNode) {
-                    const attrNames = nextNode.getAttributeNames()
-                    if (attrNames.length) {
-                        const elseDirective = attrNames.filter(name => ELSE_DIRECTIVE_REG().test(name))
-                        if (elseDirective.length) {
-                            if (equal) {
-                                nextNode.setAttribute('style', `display:none`)
+    private if__compiler(node: HTMLElement, direct: string, templateId = this.$templateStore.id): void {
+        if (templateId) {
+            const ifHTML = this.$templateStore.getIfHTML(templateId)
+            const elseHTML = this.$templateStore.getElseHTML(templateId)
+
+            if (!ifHTML) {
+                this.$templateStore.setIfHTML(templateId, node.outerHTML)
+            }
+            const exp = node.getAttribute(direct)
+            if (exp) {
+                if (isExpression(exp)) {
+                    const equal = calculateExpression(exp, this.getVal.bind(this))
+                    if (!equal) {
+                        node.style.display = 'none'
+                    }
+                    const nextNode = node.nextElementSibling
+                    if (nextNode) {
+                        if (!elseHTML) {
+                            this.$templateStore.setElseHTML(templateId, nextNode.outerHTML)
+                        }
+                        if (!this.$templateStore.getElseHTML(templateId)) {
+                            this.$templateStore.setElseHTML(templateId, nextNode.outerHTML)
+                        }
+                        const attrNames = nextNode.getAttributeNames()
+                        if (attrNames.length) {
+                            const elseDirective = attrNames.filter(name => ELSE_DIRECTIVE_REG().test(name))
+                            if (elseDirective.length) {
+                                if (equal) {
+                                    nextNode.setAttribute('style', `display:none`)
+                                }
+                                nextNode.removeAttribute(ELSE_DIRECTIVE)
                             }
-                            nextNode.removeAttribute(ELSE_DIRECTIVE)
                         }
                     }
+                } else {
+                    const val = this.getVal(exp)
+                    if (!val) {
+                        node.style.display = 'none'
+                    }
                 }
-            } else {
-                const val = this.getVal(exp)
-                if (!val) {
-                    node.style.display = 'none'
-                }
+
+                new Watcher(
+                    {
+                        vm: this.$vm,
+                        exp,
+                        templateId
+                    },
+                    val => {
+                        this.compileNode(node, templateId)
+                    }
+                )
             }
         }
         node.removeAttribute(IF_DIRECTIVE)

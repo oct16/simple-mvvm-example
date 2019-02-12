@@ -1,8 +1,8 @@
 import { Compiler } from './compiler'
 import { Observer } from './observer'
-import { vmConfig } from './model'
+import { VmConfig } from './model'
 export class VM {
-    constructor(vm: vmConfig) {
+    constructor(vm: VmConfig) {
         new Observer(vm.data)
         new Compiler(vm)
         return vm

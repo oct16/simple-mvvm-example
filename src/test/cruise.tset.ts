@@ -14,6 +14,8 @@ describe('vm core', () => {
 
         it('isMustacheTagText', () => {
             assert.equal(isMustacheTagText('{{ abc }}'), true)
+            assert.equal(isMustacheTagText('{{ abc.edf }}'), true)
+            assert.equal(isMustacheTagText('{{ 123 }}'), true)
         })
 
         it('isExpression', () => {
