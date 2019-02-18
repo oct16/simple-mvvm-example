@@ -1,4 +1,4 @@
-import { VmConfig, compileNodeOption } from './model'
+import { VmConfig } from './model'
 import {
     BIND_ATTR_REG,
     calculateExpression,
@@ -19,6 +19,7 @@ import {
 import { VM } from './vm'
 import { Watcher } from './watcher'
 import { TemplateStore } from './store'
+import { Dep } from './dep'
 
 export class Compiler {
     private $vm: VmConfig
@@ -127,12 +128,18 @@ export class Compiler {
         return val
     }
 
-    private for__compiler(node: HTMLElement, direct: string): void {
+    private for__compiler(node: HTMLElement, direct: string, templateId = this.$templateStore.id): void {
         const exp = node.getAttribute(direct)
         if (exp) {
+            const forHTML = this.$templateStore.getForHTML(templateId)
+            if (!forHTML) {
+                this.$templateStore.setForHTML(templateId, node.outerHTML)
+            }
+
             const [itemExp, arrayExp] = exp.split('of').map(item => item.trim())
             const arrayData = this.getVal(arrayExp)
             node.removeAttribute(FOR_DIRECTIVE)
+
             if (Array.isArray(arrayData)) {
                 const reRenderHTML = node.outerHTML
                 const nodeParent = node.parentNode as HTMLElement
@@ -145,12 +152,27 @@ export class Compiler {
                     childData[itemExp] = arrayData[index]
                     new VM({
                         computed: this.$computed,
+                        parent: this.$vm,
                         data: childData,
                         el: childNode.parentNode,
                         methods: this.$methods
                     } as VmConfig)
                     nodeParent.append(childNode as ChildNode)
                 })
+                const ob = (arrayData as any).__ob__.dep as Dep
+                ob.addSub(
+                    new Watcher(
+                        {
+                            vm: this.$vm,
+                            exp: arrayExp,
+                            templateId
+                        },
+                        val => {
+                            nodeParent.innerHTML = this.$templateStore.getForHTML(templateId)
+                            this.compileNode(nodeParent, templateId)
+                        }
+                    )
+                )
             }
         }
     }

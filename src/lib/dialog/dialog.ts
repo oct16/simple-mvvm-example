@@ -1,12 +1,13 @@
 interface Position {
-    layerX: number
-    layerY: number
+    pageX: number
+    pageY: number
 }
 
 export interface DialogContent {
     title: string
     confirm: string
     cancel: string
+    methods: { [key: string]: (firstName: string, ...restOfName: string[]) => void }
 }
 
 export class Dialog {
@@ -20,7 +21,6 @@ export class Dialog {
         if (this.isCreated()) {
             this.removeDialog()
         }
-
         this.initData(position, content)
         const node = this.createDom()
         this.bindDom(node)
@@ -44,11 +44,19 @@ export class Dialog {
         const closeBtn = node.querySelector('.dialog-close')
         const confirmBtn = node.querySelector('.dialog-confirm')
         const cancelBtn = node.querySelector('.dialog-cancel')
-
+        const text = node.querySelector('input') as HTMLInputElement;
+        setTimeout(() => {
+            text.focus()
+        }, 0)
         const btnGroup = [closeBtn, confirmBtn, cancelBtn]
         btnGroup.forEach((btn: null | Element) => {
             if (btn) {
                 btn.addEventListener('click', () => {
+                    Object.keys(this.content.methods).forEach(method => {
+                        if (~btn.className.indexOf(method)) {
+                            this.content.methods[method].call(this, text.value)
+                        }
+                    })
                     this.removeDialog()
                 })
             }
@@ -74,8 +82,8 @@ export class Dialog {
         const position = this.position
         return `
             <div style="
-                top: ${position.layerY + Dialog.gapY}px;
-                left: ${position.layerX + Dialog.gapX}px;
+                top: ${position.pageY + Dialog.gapY}px;
+                left: ${position.pageX + Dialog.gapX}px;
                 " class="dialog-content">
                 <div class="triangle"></div>
                 <div class="triangle inner"></div>

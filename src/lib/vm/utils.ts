@@ -14,7 +14,7 @@ export const EXPRESSION_REG = () => /^([\'\"]?[a-zA-Z-\.]+[\'\"]?)\s+([=|>|<]{2,
 export const isNodeElement = (node: Node): boolean => node.nodeType === 1
 export const isNodeText = (node: Node): boolean => node.nodeType === 3
 export const isMustacheTagText = (text: string): boolean => MUSTACHE_TAG_REG().test(text)
-export const isObject = (obj: any): boolean => obj !== null && typeof obj === 'object'
+export const isObject = (obj: any): boolean => obj !== null && typeof obj === 'object' && !(obj instanceof Array)
 export const isExpression = (exp: string): boolean => EXPRESSION_REG().test(exp)
 export const isExpressionWithPrimitiveType = (exp: string): boolean => {
     if (typeof exp === 'string') {

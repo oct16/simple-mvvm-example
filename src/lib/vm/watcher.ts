@@ -1,7 +1,8 @@
 import { Dep } from './dep'
 import { VmConfig, WatcherOption } from './model'
 import { getFirstExp, isExpression } from './utils'
-// Watcher is actually a subscriber
+import { isObject } from 'util';
+
 export class Watcher {
     $vm: VmConfig
     $exp: string
@@ -16,7 +17,6 @@ export class Watcher {
         Dep.target = this
         Dep.templateId = option.templateId || null
         this.value = this.getVal(this.$exp)
-
         Dep.templateId = null
         Dep.target = null
         return this
@@ -39,8 +39,7 @@ export class Watcher {
 
     public update(): void {
         const newVal = this.getVal(this.$exp)
-        if (newVal !== this.value) {
-            console.log(newVal)
+        if (newVal !== this.value || isObject(newVal)) {
             this.$cb(newVal)
         }
     }

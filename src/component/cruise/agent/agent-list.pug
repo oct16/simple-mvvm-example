@@ -21,8 +21,8 @@ ul.agent-list
                         
                     ul.tags
                         li(*for="tag of item.tags")
-                            span {{ tag }}
-                            i.icon-trash
+                            span {{ tag.title }}
+                            i.icon-trash(click="removeTag()")
                     
                     button.deny-button(click="deny(item)")
                         i.icon-deny

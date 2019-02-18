@@ -16,8 +16,13 @@ export class Dep {
     }
 
     public notify(): void {
-        console.log(this.subQueue)
         this.subQueue.forEach(sub => sub.update())
+    }
+
+    public depend() {
+        if (Dep.target) {
+            this.addSub(Dep.target)
+        }
     }
 
     public removeSub(sub: Watcher): void {

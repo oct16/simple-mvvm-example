@@ -4,11 +4,11 @@ export const mockData = {
     panel: {
         building: {
             name: 'Building',
-            count: '3'
+            count: 3
         },
         idle: {
             name: 'Idle',
-            count: '5'
+            count: 5
         },
         detail: {
             all: {
@@ -85,8 +85,20 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.125',
             status: 'idle',
-            tags: ['windows', 'ubuntu'],
-            test: 1
+            tags: [
+                {
+                    title: 'Firefox'
+                },
+                {
+                    title: 'Safari'
+                },
+                {
+                    title: 'Ubuntu'
+                },
+                {
+                    title: 'Chrome'
+                }
+            ]
         },
         {
             icon: 'assets/os_icons/windows.png',
@@ -94,8 +106,20 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.182',
             status: 'building',
-            tags: ['windows', 'ubuntu'],
-            test: 2
+            tags: [
+                {
+                    title: 'Firefox'
+                },
+                {
+                    title: 'Safari'
+                },
+                {
+                    title: 'Ubuntu'
+                },
+                {
+                    title: 'Chrome'
+                }
+            ]
         },
         {
             icon: 'assets/os_icons/ubuntu.png',
@@ -103,7 +127,14 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.62',
             status: 'building',
-            tags: ['windows', 'ubuntu']
+            tags: [
+                {
+                    title: 'Firefox'
+                },
+                {
+                    title: 'Safari'
+                }
+            ]
         },
         {
             icon: 'assets/os_icons/debin.png',
@@ -111,7 +142,7 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.204',
             status: 'building',
-            tags: ['windows', 'ubuntu']
+            tags: []
         },
         {
             icon: 'assets/os_icons/suse.png',
@@ -119,7 +150,20 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.132',
             status: 'idle',
-            tags: ['windows', 'ubuntu']
+            tags: [
+                {
+                    title: 'Firefox'
+                },
+                {
+                    title: 'Safari'
+                },
+                {
+                    title: 'Ubuntu'
+                },
+                {
+                    title: 'Chrome'
+                }
+            ]
         },
         {
             icon: 'assets/os_icons/cent_os.png',
@@ -127,7 +171,20 @@ export const mockData = {
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.112',
             status: 'idle',
-            tags: ['windows', 'ubuntu']
+            tags: [
+                {
+                    title: 'Firefox'
+                },
+                {
+                    title: 'Safari'
+                },
+                {
+                    title: 'Ubuntu'
+                },
+                {
+                    title: 'Chrome'
+                }
+            ]
         }
     ]
 }
