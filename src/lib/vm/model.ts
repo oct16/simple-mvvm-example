@@ -11,6 +11,7 @@ export interface WatcherOption {
     exp: string;
     templateId?: number
 }
+
 export interface compileNodeOption {
     isReplace?: boolean;
     templateId?: number

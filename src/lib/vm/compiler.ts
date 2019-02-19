@@ -1,39 +1,26 @@
 import { VmConfig } from './model'
 import {
     BIND_ATTR_REG,
-    calculateExpression,
     CLICK_TAG,
-    ELSE_DIRECTIVE,
-    ELSE_DIRECTIVE_REG,
-    FOR_DIRECTIVE,
     FOR_DIRECTIVE_REG,
     getClickMethod,
-    IF_DIRECTIVE,
     IF_DIRECTIVE_REG,
-    isExpression,
     isMustacheTagText,
     isNodeElement,
     isNodeText,
-    MUSTACHE_TAG_REG
 } from './utils'
-import { VM } from './vm'
-import { Watcher } from './watcher'
 import { TemplateStore } from './store'
-import { Dep } from './dep'
+import { Directive } from './directive'
 
 export class Compiler {
     private $vm: VmConfig
-    private $data: any
-    private $computed: any
-    private $methods: { [key: string]: (param: any, ...restOfName: any[]) => any }
     private $el: HTMLElement
     private $templateStore = new TemplateStore()
+    private directive: Directive
     constructor(vm: VmConfig) {
         this.$el = vm.el as HTMLElement
         this.$vm = vm
-        this.$data = vm.data
-        this.$computed = vm.computed
-        this.$methods = vm.methods
+        this.directive = new Directive(vm, this.compileNode.bind(this))
         this.compileEl(this.$el)
     }
 
@@ -87,20 +74,20 @@ export class Compiler {
                 const forDirective = attrNames.filter(name => FOR_DIRECTIVE_REG().test(name))
                 if (forDirective.length) {
                     const direct = forDirective[0]
-                    this.for__compiler(node, direct)
+                    this.directive.forCompiler(node, direct)
                     return
                 }
 
                 const ifDirective = attrNames.filter(name => IF_DIRECTIVE_REG().test(name))
                 if (ifDirective.length) {
                     const direct = ifDirective[0]
-                    this.if__compiler(node, direct, templateId)
+                    this.directive.ifCompiler(node, direct, templateId)
                 }
 
                 const bindAttrs = attrNames.filter(name => BIND_ATTR_REG().test(name))
                 if (bindAttrs.length) {
                     bindAttrs.forEach(attr => {
-                        this.attr__compiler(node, attr)
+                        this.directive.attrCompiler(node, attr)
                     })
                 }
             }
@@ -115,164 +102,7 @@ export class Compiler {
                 this.compileNodes(node)
             }
         } else if (isNodeText(node) && isMustacheTagText(node.textContent as string)) {
-            this.innerText__compiler(node, RegExp.$1)
+            this.directive.innerTextCompiler(node, RegExp.$1)
         }
-    }
-
-    private getVal(exp: string): any {
-        let val = this.$data
-        const keys = exp.split('.')
-        keys.forEach(key => {
-            val = val[key]
-        })
-        return val
-    }
-
-    private for__compiler(node: HTMLElement, direct: string, templateId = this.$templateStore.id): void {
-        const exp = node.getAttribute(direct)
-        if (exp) {
-            const forHTML = this.$templateStore.getForHTML(templateId)
-            if (!forHTML) {
-                this.$templateStore.setForHTML(templateId, node.outerHTML)
-            }
-
-            const [itemExp, arrayExp] = exp.split('of').map(item => item.trim())
-            const arrayData = this.getVal(arrayExp)
-            node.removeAttribute(FOR_DIRECTIVE)
-
-            if (Array.isArray(arrayData)) {
-                const reRenderHTML = node.outerHTML
-                const nodeParent = node.parentNode as HTMLElement
-                nodeParent.innerHTML = ''
-                arrayData.forEach((_, index) => {
-                    const div = document.createElement('div')
-                    div.innerHTML = reRenderHTML.trim()
-                    const childNode = div.lastChild as Element
-                    const childData = {} as any
-                    childData[itemExp] = arrayData[index]
-                    new VM({
-                        computed: this.$computed,
-                        parent: this.$vm,
-                        data: childData,
-                        el: childNode.parentNode,
-                        methods: this.$methods
-                    } as VmConfig)
-                    nodeParent.append(childNode as ChildNode)
-                })
-                const ob = (arrayData as any).__ob__.dep as Dep
-                ob.addSub(
-                    new Watcher(
-                        {
-                            vm: this.$vm,
-                            exp: arrayExp,
-                            templateId
-                        },
-                        val => {
-                            nodeParent.innerHTML = this.$templateStore.getForHTML(templateId)
-                            this.compileNode(nodeParent, templateId)
-                        }
-                    )
-                )
-            }
-        }
-    }
-
-    private attr__compiler(node: HTMLElement, attr: string): void {
-        const exp = node.getAttribute(attr)
-        const length = attr.length
-        const pureAttr = attr.substring(1, length - 1)
-        if (exp) {
-            if (isExpression(exp)) {
-                const equal = calculateExpression(exp, this.getVal.bind(this))
-                if (equal) {
-                    node.setAttribute(pureAttr, 'true')
-                }
-            } else {
-                const val = this.getVal(exp)
-                if (val) {
-                    node.setAttribute(pureAttr, val)
-                }
-            }
-            new Watcher(
-                {
-                    vm: this.$vm,
-                    exp
-                },
-                val => {
-                    node.setAttribute(pureAttr, val)
-                }
-            )
-            node.removeAttribute(attr)
-        }
-    }
-
-    private innerText__compiler(node: Node, exp: string): void {
-        const val = this.getVal(exp)
-        node.textContent = node.textContent ? node.textContent.replace(MUSTACHE_TAG_REG(), val) : ''
-        new Watcher(
-            {
-                vm: this.$vm,
-                exp
-            },
-            val => {
-                node.textContent = val
-            }
-        )
-    }
-
-    private if__compiler(node: HTMLElement, direct: string, templateId = this.$templateStore.id): void {
-        if (templateId) {
-            const ifHTML = this.$templateStore.getIfHTML(templateId)
-            const elseHTML = this.$templateStore.getElseHTML(templateId)
-
-            if (!ifHTML) {
-                this.$templateStore.setIfHTML(templateId, node.outerHTML)
-            }
-            const exp = node.getAttribute(direct)
-            if (exp) {
-                if (isExpression(exp)) {
-                    const equal = calculateExpression(exp, this.getVal.bind(this))
-                    if (!equal) {
-                        node.style.display = 'none'
-                    }
-                    const nextNode = node.nextElementSibling
-                    if (nextNode) {
-                        if (!elseHTML) {
-                            this.$templateStore.setElseHTML(templateId, nextNode.outerHTML)
-                        }
-                        if (!this.$templateStore.getElseHTML(templateId)) {
-                            this.$templateStore.setElseHTML(templateId, nextNode.outerHTML)
-                        }
-                        const attrNames = nextNode.getAttributeNames()
-                        if (attrNames.length) {
-                            const elseDirective = attrNames.filter(name => ELSE_DIRECTIVE_REG().test(name))
-                            if (elseDirective.length) {
-                                if (equal) {
-                                    nextNode.setAttribute('style', `display:none`)
-                                }
-                                nextNode.removeAttribute(ELSE_DIRECTIVE)
-                            }
-                        }
-                    }
-                } else {
-                    const val = this.getVal(exp)
-                    if (!val) {
-                        node.style.display = 'none'
-                    }
-                }
-
-                new Watcher(
-                    {
-                        vm: this.$vm,
-                        exp,
-                        templateId
-                    },
-                    val => {
-                        this.compileNode(node, templateId)
-                    }
-                )
-            }
-        }
-        node.removeAttribute(IF_DIRECTIVE)
     }
 }

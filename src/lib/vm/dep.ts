@@ -2,7 +2,7 @@ import { Watcher } from './watcher'
 
 let uid = 0
 export class Dep {
-    public static target: any
+    public static target: Watcher | null
     public static templateId: number | null
     public subQueue: Watcher[]
     public id: number
@@ -19,7 +19,7 @@ export class Dep {
         this.subQueue.forEach(sub => sub.update())
     }
 
-    public depend() {
+    public depend(): void {
         if (Dep.target) {
             this.addSub(Dep.target)
         }

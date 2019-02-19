@@ -31,7 +31,9 @@ new VM({
                 }
             )
         },
-        deny: (e: MouseEvent, agentItem: any) => {},
+        deny: (e: MouseEvent, agentItem: any) => {
+            agentItem.status = agentItem.status !== 'building' ? 'building' : 'idle'
+        },
         removeTag(this: any, e: MouseEvent, agentItem: any): void {
             if (this.parent) {
                 const tags = this.parent.data.item.tags

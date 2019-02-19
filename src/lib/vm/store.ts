@@ -6,10 +6,12 @@ export class TemplateStore {
     get id() {
         return ++uid
     }
+    
     private static IF_PREFIX = 'if_'
     private static FOR_PREFIX = 'for_'
     private static IF_WATCHER_PREFIX = 'if_watcher_'
     private static ELSE_PREFIX = 'else_'
+
     public set(key: any, val: any): void {
         map.set(key, val)
     }

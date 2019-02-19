@@ -1,6 +1,6 @@
 import { Dep } from './dep'
 import { isObject } from './utils'
-import { Watcher } from './watcher'
+import { Watcher } from './watcher';
 
 const arrayPrototype = Array.prototype as any
 const arrayMethods = Object.create(arrayPrototype)
@@ -65,7 +65,7 @@ export class Observer {
         })
     }
 
-    defineReactive(data: any, key: string) {
+    defineReactive(data: any, key: string): void {
         let val = data[key]
         let dep = new Dep()
 

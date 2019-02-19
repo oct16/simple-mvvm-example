@@ -8,5 +8,7 @@ webpackConfig.plugins.push(
     }),
     new webpack.HotModuleReplacementPlugin()
 )
-
+webpackConfig.devServer = {
+    open: true
+}
 module.exports = webpackConfig
