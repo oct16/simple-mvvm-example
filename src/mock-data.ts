@@ -1,5 +1,5 @@
 export const mockData = {
-    copyright: '@Copyright 2017 ThoughtWorks',
+    copyright: '@Copyright 2017 Oct16',
     logo: 'assets/logo/logo.svg',
     panel: {
         building: {
@@ -62,26 +62,26 @@ export const mockData = {
         }
     ],
     histories: [
-        'bjstdmnggbr03/Acceptance_test',
-        'bjstdmnggbr04/Acceptance_test',
-        'bjstdmnggbr05/Acceptance_test',
-        'bjstdmnggbr06/Acceptance_test',
-        'bjstdmnggbr07/Acceptance_test',
-        'bjstdmnggbr08/Acceptance_test',
-        'bjstdmnggbr09/Acceptance_test',
-        'bjstdmnggbr10/Acceptance_test',
-        'bjstdmnggbr11/Acceptance_test',
-        'bjstdmnggbr12/Acceptance_test',
-        'bjstdmnggbr13/Acceptance_test',
-        'bjstdmnggbr14/Acceptance_test',
-        'bjstdmnggbr15/Acceptance_test',
-        'bjstdmnggbr16/Acceptance_test',
-        'bjstdmnggbr17/Acceptance_test'
+        'happyhacking03/Acceptance_test',
+        'happyhacking04/Acceptance_test',
+        'happyhacking05/Acceptance_test',
+        'happyhacking06/Acceptance_test',
+        'happyhacking07/Acceptance_test',
+        'happyhacking08/Acceptance_test',
+        'happyhacking09/Acceptance_test',
+        'happyhacking10/Acceptance_test',
+        'happyhacking11/Acceptance_test',
+        'happyhacking12/Acceptance_test',
+        'happyhacking13/Acceptance_test',
+        'happyhacking14/Acceptance_test',
+        'happyhacking15/Acceptance_test',
+        'happyhacking16/Acceptance_test',
+        'happyhacking17/Acceptance_test'
     ],
     agentList: [
         {
             icon: 'assets/os_icons/windows.png',
-            title: 'bjstdmngbg01.thoughtworks.com',
+            title: 'happyhacking01.oct16.cn',
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.125',
             status: 'idle',
@@ -102,7 +102,7 @@ export const mockData = {
         },
         {
             icon: 'assets/os_icons/windows.png',
-            title: 'bjstdmngbg08.thoughtworks.com',
+            title: 'happyhacking08.oct16.cn',
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.182',
             status: 'building',
@@ -123,7 +123,7 @@ export const mockData = {
         },
         {
             icon: 'assets/os_icons/ubuntu.png',
-            title: 'bjstdmngbg10.thoughtworks.com',
+            title: 'happyhacking10.oct16.cn',
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.62',
             status: 'building',
@@ -138,7 +138,7 @@ export const mockData = {
         },
         {
             icon: 'assets/os_icons/debin.png',
-            title: 'bjstdmngbg11.thoughtworks.com',
+            title: 'happyhacking11.oct16.cn',
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.204',
             status: 'building',
@@ -146,7 +146,7 @@ export const mockData = {
         },
         {
             icon: 'assets/os_icons/suse.png',
-            title: 'bjstdmngbg.thoughtworks.com',
+            title: 'happyhacking.oct16.cn',
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.132',
             status: 'idle',
@@ -167,7 +167,7 @@ export const mockData = {
         },
         {
             icon: 'assets/os_icons/cent_os.png',
-            title: 'bjstdmngbg01.thoughtworks.com',
+            title: 'happyhacking01.oct16.cn',
             folderName: '/var/lib/cruise-agent',
             ip: '192.168.1.112',
             status: 'idle',
