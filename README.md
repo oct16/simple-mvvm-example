@@ -5,9 +5,9 @@
 - Using Mocha as a unit test tool
 - Using the TypeScript language to improve the readability and the reliability of the code.
 - Using Pug as an HTML template language, using Stylus and Postcss as CSS pre processors
-- CSS Grid system for page layout and adapt mobile
-- Simple singleton dialog component
-- Simple MVVM lib
+- Using css grid system for page layout and adapt mobile
+- Simply singleton dialog component
+- Simply MVVM lib
 
 
 ### Project Description
