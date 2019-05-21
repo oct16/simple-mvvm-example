@@ -1,6 +1,5 @@
 import { Dep } from './dep'
 import { isObject } from './utils'
-import { Watcher } from './watcher';
 
 const arrayPrototype = Array.prototype as any
 const arrayMethods = Object.create(arrayPrototype)
@@ -79,21 +78,11 @@ export class Observer {
         Object.defineProperty(data, key, {
             enumerable: true,
             configurable: true,
-            get: function() {
-                if (Dep.target) {
-                    if (Dep.templateId) {
-                        const templateWatchers = dep.subQueue.filter((sub: Watcher) => sub.$templateId)
-                        if (templateWatchers.length) {
-                            templateWatchers.forEach(watcher => {
-                                dep.removeSub(watcher)
-                            })
-                        }
-                    }
-                }
+            get() {
                 dep.depend()
                 return val
             },
-            set: function(newVal) {
+            set(newVal) {
                 if (val !== newVal) {
                     val = newVal
                     dep.notify()
